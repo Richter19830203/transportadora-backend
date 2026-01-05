@@ -1,0 +1,7 @@
+# Configuração do Render para Flask
+
+# Build script
+pip install -r requirements.txt
+
+# Start command
+gunicorn controle:app

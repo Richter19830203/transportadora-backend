@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Controle - Transportadora</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="responsive.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            // Configure a URL da API aqui para Netlify
+            window.API_URL = "http://localhost:5000/api"; // Altere para sua URL de produ��o
+        </script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚚 Sistema de Controle Financeiro - Transportadora</h1>
+            <p class="subtitle">Gestão completa de orçamentos, faturamento e gastos</p>
+        </header>
+
+        <!-- Dashboard com resumo financeiro -->
+        <section class="dashboard">
+            <h2>📊 Dashboard Financeiro</h2>
+            <div class="cards">
+                <div class="card card-success">
+                    <h3>Orçamentos Enviados</h3>
+                    <p class="valor" id="total-orcamentos">R$ 0,00</p>
+                </div>
+                <div class="card card-primary">
+                    <h3>Faturamento Real</h3>
+                    <p class="valor" id="total-faturamento">R$ 0,00</p>
+                </div>
+                <div class="card card-warning">
+                    <h3>Total de Gastos</h3>
+                    <p class="valor" id="total-gastos">R$ 0,00</p>
+                </div>
+                <div class="card card-info">
+                    <h3>Lucro Líquido</h3>
+                    <p class="valor" id="lucro-liquido">R$ 0,00</p>
+                </div>
+            </div>
+
+            <div class="cards">
+                <div class="card">
+                    <h4>Gastos Mensais</h4>
+                    <p class="valor-pequeno" id="gastos-mensais">R$ 0,00</p>
+                </div>
+                <div class="card">
+                    <h4>Gastos Anuais</h4>
+                    <p class="valor-pequeno" id="gastos-anuais">R$ 0,00</p>
+                </div>
+                <div class="card">
+                    <h4>Gastos Eventuais</h4>
+                    <p class="valor-pequeno" id="gastos-eventuais">R$ 0,00</p>
+                </div>
+                <div class="card">
+                    <h4>Impostos</h4>
+                    <p class="valor-pequeno" id="total-impostos">R$ 0,00</p>
+                </div>
+                <div class="card">
+                    <h4>Investimentos</h4>
+                    <p class="valor-pequeno" id="total-investimentos">R$ 0,00</p>
+                </div>
+            </div>
+
+                <div class="chart-panel">
+                    <div class="chart-header">
+                        <h3>Resumo Visual</h3>
+                        <p>Comparativo de Orçamentos, Faturamento, Gastos e Lucro Líquido</p>
+                        <div class="chart-filters">
+                            <div class="filter-group">
+                                <label>Início</label>
+                                <div class="filter-row">
+                                    <select id="start-dia" aria-label="Dia inicial"></select>
+                                    <select id="start-mes" aria-label="Mês inicial"></select>
+                                    <select id="start-ano" aria-label="Ano inicial"></select>
+                                </div>
+                            </div>
+                            <div class="filter-group">
+                                <label>Fim</label>
+                                <div class="filter-row">
+                                    <select id="end-dia" aria-label="Dia final"></select>
+                                    <select id="end-mes" aria-label="Mês final"></select>
+                                    <select id="end-ano" aria-label="Ano final"></select>
+                                </div>
+                            </div>
+                            <div class="filter-actions">
+                                <button id="btn-filtrar" type="button">Aplicar</button>
+                                <button id="btn-limpar" type="button" class="btn-outline">Limpar</button>
+                                <button id="btn-exportar-excel" type="button" class="btn-outline">Exportar Excel</button>
+                            </div>
+                        </div>
+                    </div>
+                    <canvas id="resumoChart" aria-label="Gráfico de resumo financeiro" role="img"></canvas>
+                </div>
+        </section>
+
+        <!-- Navegação por abas -->
+        <nav class="tabs">
+            <button class="tab-button active" onclick="showTab('orcamentos')">Orçamentos</button>
+            <button class="tab-button" onclick="showTab('faturamento')">Faturamento</button>
+            <button class="tab-button" onclick="showTab('gastos-mensais')">Gastos Mensais</button>
+            <button class="tab-button" onclick="showTab('gastos-anuais')">Gastos Anuais</button>
+            <button class="tab-button" onclick="showTab('gastos-eventuais')">Gastos Eventuais</button>
+            <button class="tab-button" onclick="showTab('impostos')">Impostos</button>
+            <button class="tab-button" onclick="showTab('lucros')">Lucros</button>
+            <button class="tab-button" onclick="showTab('investimentos')">Investimentos</button>
+        </nav>
+
+        <!-- Seção: Orçamentos -->
+        <section id="orcamentos" class="tab-content active">
+            <h2>💼 Orçamentos Enviados</h2>
+            <form id="form-orcamento" class="form">
+                <input type="text" id="orc-descricao" placeholder="Descrição" required>
+                <input type="number" id="orc-valor" placeholder="Valor Bruto" step="0.01" required>
+                <input type="text" id="orc-cliente" placeholder="Cliente" required>
+                <input type="date" id="orc-data" required>
+                <select id="orc-status">
+                    <option value="Pendente">Pendente</option>
+                    <option value="Aprovado">Aprovado</option>
+                    <option value="Recusado">Recusado</option>
+                </select>
+                <button type="submit">Adicionar Orçamento</button>
+            </form>
+
+            <!-- Filtro de orçamentos enviados -->
+            <div class="filters-row" style="display:flex; gap:10px; margin:15px 0; flex-wrap:wrap; align-items:flex-end;">
+                <div style="flex:1; min-width:200px;">
+                    <label for="filtro-orc-texto" style="display:block; margin-bottom:6px; font-weight:600;">Buscar por descrição ou cliente</label>
+                    <input type="text" id="filtro-orc-texto" placeholder="Digite para filtrar..." style="width:100%;">
+                </div>
+                <div style="width:180px;">
+                    <label for="filtro-orc-status" style="display:block; margin-bottom:6px; font-weight:600;">Status</label>
+                    <select id="filtro-orc-status" style="width:100%;">
+                        <option value="">Todos</option>
+                        <option value="Pendente">Pendente</option>
+                        <option value="Aprovado">Aprovado</option>
+                        <option value="Recusado">Recusado</option>
+                    </select>
+                </div>
+            </div>
+            <div id="lista-orcamentos" class="lista"></div>
+        </section>
+
+        <!-- Seção: Faturamento -->
+        <section id="faturamento" class="tab-content">
+            <h2>💰 Faturamento Real</h2>
+            <form id="form-faturamento" class="form">
+                <input type="text" id="fat-descricao" placeholder="Descrição" required>
+                <input type="number" id="fat-valor" placeholder="Valor" step="0.01" required>
+                <input type="text" id="fat-cliente" placeholder="Cliente" required>
+                <input type="date" id="fat-data" required>
+                <input type="text" id="fat-nf" placeholder="Número da Nota Fiscal">
+                <button type="submit">Registrar Faturamento</button>
+            </form>
+            <div id="lista-faturamento" class="lista"></div>
+        </section>
+
+        <!-- Seção: Gastos Mensais -->
+        <section id="gastos-mensais" class="tab-content">
+            <h2>📅 Gastos Mensais</h2>
+            <form id="form-gasto-mensal" class="form">
+                <select id="gm-categoria" required>
+                    <option value="">Selecione a Categoria</option>
+                    <option value="Combustível">Combustível</option>
+                    <option value="Manutenção">Manutenção</option>
+                    <option value="Salários">Salários</option>
+                    <option value="Aluguel">Aluguel</option>
+                    <option value="Seguro">Seguro</option>
+                    <option value="Outros">Outros</option>
+                </select>
+                <input type="text" id="gm-descricao" placeholder="Descrição" required>
+                <input type="number" id="gm-valor" placeholder="Valor" step="0.01" required>
+                <input type="number" id="gm-mes" placeholder="Mês (1-12)" min="1" max="12" required>
+                <input type="number" id="gm-ano" placeholder="Ano" min="2000" max="2100" required>
+                <input type="date" id="gm-data" required>
+                <button type="submit">Registrar Gasto Mensal</button>
+            </form>
+            <div id="lista-gastos-mensais" class="lista"></div>
+        </section>
+
+        <!-- Seção: Gastos Anuais -->
+        <section id="gastos-anuais" class="tab-content">
+            <h2>📆 Gastos Anuais</h2>
+            <form id="form-gasto-anual" class="form">
+                <select id="ga-categoria" required>
+                    <option value="">Selecione a Categoria</option>
+                    <option value="Licenciamento">Licenciamento</option>
+                    <option value="IPVA">IPVA</option>
+                    <option value="Seguro Anual">Seguro Anual</option>
+                    <option value="Taxas">Taxas</option>
+                    <option value="Outros">Outros</option>
+                </select>
+                <input type="text" id="ga-descricao" placeholder="Descrição" required>
+                <input type="number" id="ga-valor" placeholder="Valor" step="0.01" required>
+                <input type="number" id="ga-ano" placeholder="Ano" min="2000" max="2100" required>
+                <input type="date" id="ga-data" required>
+                <button type="submit">Registrar Gasto Anual</button>
+            </form>
+            <div id="lista-gastos-anuais" class="lista"></div>
+        </section>
+
+        <!-- Seção: Gastos Eventuais -->
+        <section id="gastos-eventuais" class="tab-content">
+            <h2>⚠️ Gastos Eventuais</h2>
+            <form id="form-gasto-eventual" class="form">
+                <select id="ge-tipo" required>
+                    <option value="">Selecione o Tipo</option>
+                    <option value="Reembolso">Reembolso</option>
+                    <option value="Danos e Perdas">Danos e Perdas</option>
+                    <option value="Multa">Multa</option>
+                    <option value="Acidente">Acidente</option>
+                    <option value="Outros">Outros</option>
+                </select>
+                <input type="text" id="ge-descricao" placeholder="Descrição" required>
+                <input type="number" id="ge-valor" placeholder="Valor" step="0.01" required>
+                <input type="date" id="ge-data" required>
+                <input type="text" id="ge-responsavel" placeholder="Responsável">
+                <button type="submit">Registrar Gasto Eventual</button>
+            </form>
+            <div id="lista-gastos-eventuais" class="lista"></div>
+        </section>
+
+        <!-- Seção: Impostos -->
+        <section id="impostos" class="tab-content">
+            <h2>🏛️ Impostos e Notas Fiscais</h2>
+            <form id="form-imposto" class="form">
+                <select id="imp-tipo" required>
+                    <option value="">Tipo de Imposto</option>
+                    <option value="ISS">ISS</option>
+                    <option value="ICMS">ICMS</option>
+                    <option value="PIS">PIS</option>
+                    <option value="COFINS">COFINS</option>
+                    <option value="IRPJ">IRPJ</option>
+                    <option value="CSLL">CSLL</option>
+                    <option value="Outros">Outros</option>
+                </select>
+                <input type="number" id="imp-valor" placeholder="Valor" step="0.01" required>
+                <input type="text" id="imp-referencia" placeholder="Referência (mês/ano)" required>
+                <input type="date" id="imp-vencimento" required>
+                <button type="submit">Registrar Imposto</button>
+            </form>
+            <div id="lista-impostos" class="lista"></div>
+        </section>
+
+        <!-- Seção: Lucros -->
+        <section id="lucros" class="tab-content">
+            <h2>📈 Lucros</h2>
+            <form id="form-lucro" class="form">
+                <input type="text" id="lucro-descricao" placeholder="Descrição" required>
+                <input type="number" id="lucro-valor" placeholder="Valor" step="0.01" required>
+                <input type="number" id="lucro-mes" placeholder="Mês (1-12)" min="1" max="12" required>
+                <input type="number" id="lucro-ano" placeholder="Ano" min="2000" max="2100" required>
+                <input type="date" id="lucro-data" required>
+                <button type="submit">Registrar Lucro</button>
+            </form>
+            <div id="lista-lucros" class="lista"></div>
+        </section>
+
+        <!-- Seção: Investimentos -->
+        <section id="investimentos" class="tab-content">
+            <h2>💎 Investimentos</h2>
+            <form id="form-investimento" class="form">
+                <select id="inv-tipo" required>
+                    <option value="">Tipo de Investimento</option>
+                    <option value="Veículos">Veículos</option>
+                    <option value="Equipamentos">Equipamentos</option>
+                    <option value="Tecnologia">Tecnologia</option>
+                    <option value="Infraestrutura">Infraestrutura</option>
+                    <option value="Treinamento">Treinamento</option>
+                    <option value="Outros">Outros</option>
+                </select>
+                <input type="text" id="inv-descricao" placeholder="Descrição" required>
+                <input type="number" id="inv-valor" placeholder="Valor" step="0.01" required>
+                <input type="date" id="inv-data" required>
+                <input type="number" id="inv-retorno" placeholder="Retorno Esperado (%)" step="0.01">
+                <button type="submit">Registrar Investimento</button>
+            </form>
+            <div id="lista-investimentos" class="lista"></div>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+
+

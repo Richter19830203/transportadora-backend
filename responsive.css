@@ -1,0 +1,308 @@
+/* Estilos Responsivos para Mobile */
+
+@media (max-width: 1024px) {
+    .container {
+        padding: 15px;
+        max-width: 100%;
+    }
+
+    header h1 {
+        font-size: 24px;
+    }
+
+    .cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 12px;
+    }
+
+    header h1 {
+        font-size: 20px;
+    }
+
+    header p {
+        font-size: 13px;
+    }
+
+    .cards {
+        grid-template-columns: 1fr;
+    }
+
+    .card {
+        padding: 15px;
+    }
+
+    .card h3 {
+        font-size: 14px;
+    }
+
+    .card .valor {
+        font-size: 18px;
+    }
+
+    .chart-filters {
+        flex-direction: column;
+    }
+
+    .filter-group,
+    .filter-row {
+        width: 100%;
+    }
+
+    .filter-row {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .filter-row select {
+        width: 100%;
+    }
+
+    .tabs {
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    .tab-button {
+        padding: 8px 12px;
+        font-size: 12px;
+        flex: 1;
+        min-width: 80px;
+    }
+
+    .form {
+        flex-direction: column;
+    }
+
+    .form input,
+    .form select,
+    .form textarea {
+        width: 100%;
+    }
+
+    .form button {
+        width: 100%;
+    }
+
+    .lista {
+        gap: 10px;
+    }
+
+    .item {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .item-info {
+        width: 100%;
+    }
+
+    .item-info p {
+        margin: 5px 0;
+        font-size: 13px;
+    }
+
+    .item-valor {
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .item-actions {
+        width: 100%;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .item-actions button {
+        flex: 1;
+        min-width: 100px;
+        padding: 10px 8px;
+        font-size: 12px;
+    }
+
+    .filters-row {
+        flex-direction: column;
+    }
+
+    .filters-row > div {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 10px;
+        border-radius: 8px;
+    }
+
+    header {
+        padding: 10px 0;
+        margin-bottom: 15px;
+    }
+
+    header h1 {
+        font-size: 18px;
+        margin-bottom: 5px;
+    }
+
+    header p {
+        font-size: 12px;
+    }
+
+    .dashboard {
+        margin-bottom: 20px;
+    }
+
+    .dashboard h2 {
+        font-size: 18px;
+        margin-bottom: 15px;
+    }
+
+    .cards {
+        gap: 10px;
+    }
+
+    .card {
+        padding: 12px;
+        border-radius: 8px;
+    }
+
+    .card h3 {
+        font-size: 13px;
+        margin-bottom: 8px;
+    }
+
+    .card .valor {
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .chart-panel {
+        display: none;
+    }
+
+    .tabs {
+        gap: 4px;
+        margin-bottom: 15px;
+    }
+
+    .tab-button {
+        padding: 6px 10px;
+        font-size: 11px;
+        border-radius: 4px;
+    }
+
+    .tab-button.active {
+        font-weight: bold;
+    }
+
+    .tab-content h2 {
+        font-size: 16px;
+        margin-bottom: 12px;
+    }
+
+    .form {
+        gap: 8px;
+    }
+
+    .form input,
+    .form select,
+    .form textarea {
+        padding: 10px;
+        font-size: 14px;
+        border-radius: 4px;
+    }
+
+    .form button {
+        padding: 12px;
+        font-size: 14px;
+        border-radius: 4px;
+    }
+
+    .filters-row {
+        gap: 8px;
+    }
+
+    .filters-row > div {
+        width: 100%;
+    }
+
+    .filters-row input,
+    .filters-row select {
+        width: 100%;
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .item {
+        padding: 12px;
+        gap: 10px;
+    }
+
+    .item-info p {
+        font-size: 12px;
+        margin: 4px 0;
+    }
+
+    .item-valor {
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .item-actions {
+        width: 100%;
+    }
+
+    .item-actions button {
+        flex: 1;
+        padding: 8px 6px;
+        font-size: 11px;
+    }
+
+    .btn-delete,
+    .btn-edit,
+    .btn-update {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .status-badge {
+        font-size: 11px;
+        padding: 4px 8px;
+    }
+}
+
+@media (max-width: 360px) {
+    header h1 {
+        font-size: 16px;
+    }
+
+    .card h3 {
+        font-size: 12px;
+    }
+
+    .card .valor {
+        font-size: 14px;
+    }
+
+    .tab-button {
+        padding: 5px 8px;
+        font-size: 10px;
+    }
+
+    .item-actions button {
+        padding: 6px 4px;
+        font-size: 10px;
+    }
+
+    .form input,
+    .form select {
+        font-size: 16px; /* Evita zoom no iOS */
+    }
+}
